@@ -144,7 +144,7 @@ app.use('/soal', soal);
 
 app.use(express.static('public')); 	//membuka direktori public agar dapat di akses oleh client
 
-server.listen(80);
+server.listen(3000);
 
 //===============DATABASE PROCESS===============
 var hapusPeserta = function(res, id){
