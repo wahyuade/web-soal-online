@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dashboard</title>
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<link href="./css//font-awesome.min.css" rel="stylesheet">
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/angular.min.js"></script>
+	<script type="text/javascript" src="./js/bootstrap.js"></script>
+	<script type="text/javascript" src="./js/service_admin.js"></script>
+
+	<style type="text/css">
+		span {
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body ng-app="dashboardAdminApp" ng-controller="AdminController">
+<h1>Ini halaman dashboard admin</h1>
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"><a href="#user_terdaftar" aria-controls="user_terdaftar" role="tab" data-toggle="tab">User Terdaftar</a></li>
+    <li role="presentation"><a href="#manajemen_soal" aria-controls="manajemen_soal" role="tab" data-toggle="tab">Manajemen Soal</a></li>
+    <li role="presentation"><a href="#hasil" aria-controls="hasil" role="tab" data-toggle="tab">Hasil</a></li>
+    <li role="presentation"><a href="#user_online" aria-controls="user_online" role="tab" data-toggle="tab">User Online</a></li>
+  </ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="user_terdaftar">
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading text-center">User soal online</div>
+				<!-- Table -->
+				<table class="table">
+					<thead> 
+						<tr> 
+							<th>#</th> 
+							<th>First Name</th> 
+							<th>Last Name</th> 
+							<th>Username</th> 
+							<th>Command</th> 
+						</tr> 
+					</thead>
+					<tbody>
+						<tr ng-repeat="user in users">
+							<th scope="row">{{$index+1}}</th>
+							<td>{{user.firstname}}</td>
+							<td>{{user.lastname}}</td>
+							<td>{{user.username}}</td>
+							<td>
+								<span type="button" data-toggle="modal" data-target="#{{user.username}}" class="label label-primary">Edit</span>
+											<!-- Modal -->
+								<div class="modal fade" id="{{user.username}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								  <div class="modal-dialog" role="document">
+								    <div class="modal-content">
+								      <div class="modal-header">
+								        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								        <h4 class="modal-title" id="myModalLabel">Edit data {{user.username}}</h4>
+								      </div>
+								      <div class="modal-body">
+								        	<form class="form-group" name="userForm">
+												<div class="input-group" style="margin-bottom: 10px" >
+													<span class="input-group-addon"><i class="glyphicon glyphicon-import"></i></span>
+													<input type="text" class="form-control" placeholder="Firstname" name="firstname" ng-model="user.firstname">
+												</div>
+												<div class="input-group" style="margin-bottom: 10px" >
+													<span class="input-group-addon"><i class="glyphicon glyphicon-export"></i></span>
+													<input type="text" class="form-control" placeholder="Lastname" name="lastname" ng-model="user.lastname">
+												</div>
+												<div class="input-group" style="margin-bottom: 10px" >
+													<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+													<input type="text" class="form-control" placeholder="Username" name="username" ng-model="user.username">
+												</div>
+												<div style="margin-bottom: 10px" class="input-group" style="margin-bottom: 10px" >
+													<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+													<input type="password" class="form-control" placeholder="Password" name="password" ng-model="user.password">
+												</div>
+											</form>
+								      </div>
+								      <div class="modal-footer">
+								        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+								        <button type="button" class="btn btn-primary" ng-click="updatePeserta(user)">Save changes</button>
+								      </div>
+								    </div>
+								  </div>
+								</div>
+								<span class="label label-danger" ng-click="hapusPeserta(user._id)">Delete</span>
+							</td>
+						</tr> 
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="manajemen_soal">
+			<div class="container-fluid">
+			 <div class="row">
+                <div class="col-sm-3">
+                    <div class="nav-side-menu">
+                        <div class="brand">Jumlah soal : {{listSoal.length}}</div>
+                        <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+                        <div class="menu-list">
+                            <ul id="menu-content" class="menu-content collapse out">
+                                <li ng-click="tambahSoal()">
+                                    <a href="#">
+                                        <i class="fa fa-plus fa-lg"></i>Tambah soal
+                                    </a>
+                                </li>
+                                <li data-toggle="collapse" data-target="#new" class="collapsed">
+                                    <a href="#"><i class="fa fa-dashboard fa-lg"></i>Soal<span class="arrow"></span></a>
+                                </li>
+                                <ul class="sub-menu collapse" id="new">
+                                    <li ng-repeat="soal in listSoal" ng-click="detailSoal(soal, $index+1)">No {{$index+1}}</li>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <h1>{{judul}}</h1>
+                    <div class="row">
+                    	<div class="col-md-12 col-sm-12">
+                    		<div class="input-group" style="margin-bottom: 10px" >
+								<span class="input-group-addon">Pertanyaan</span>
+								<input type="text" class="form-control" placeholder="masukkan pertanyaan" ng-model="soal.pertanyaan">
+							</div>
+							<div class="row">
+								<div class="col-sm-6 col-md-6">
+									<div class="input-group" style="margin-bottom: 10px" >
+										<span class="input-group-addon">Jawaban A</span>
+										<input type="text" class="form-control" placeholder="masukkan jawaban A" ng-model="soal.a">
+									</div>
+								</div>
+								<div class="col-sm-6 col-md-6">
+									<div class="input-group" style="margin-bottom: 10px" >
+										<span class="input-group-addon">Jawaban B</span>
+										<input type="text" class="form-control" placeholder="masukkan jawaban B" ng-model="soal.b">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6 col-md-6">
+									<div class="input-group" style="margin-bottom: 10px" >
+										<span class="input-group-addon">Jawaban C</span>
+										<input type="text" class="form-control" placeholder="masukkan jawaban C" ng-model="soal.c">
+									</div>
+								</div>
+								<div class="col-sm-6 col-md-6">
+									<div class="input-group" style="margin-bottom: 10px" >
+										<span class="input-group-addon">Jawaban D</span>
+										<input type="text" class="form-control" placeholder="masukkan jawaban D" ng-model="soal.d">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 col-sm-6 col-md-offset-3 col-sm-offset-3">
+									<h4>Jawaban :</h4>
+									<select class="form-control" ng-model="soal.jawaban">
+									  <option value="a">Jawaban A</option>
+									  <option value="b">Jawaban B</option>
+									  <option value="c">Jawaban C</option>
+									  <option value="d">Jawaban D</option>
+									</select>
+								</div>
+							</div>
+							<dir class="row">
+								<button class="btn btn-primary" ng-click="uploadSoal(soal)">Simpan</button>
+								<button class="btn btn-danger" ng-click="hapusSoal(soal)">Hapus</button>
+							</dir>
+                    	</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="hasil">C</div>
+		<div role="tabpanel" class="tab-pane" id="user_online">D</div>
+	</div>
+
+</div>
+</body>
+<!-- script untuk tetap menjaga tab ketika di reload -->
+<script type="text/javascript">
+	$('a[data-toggle="tab"]').click(function (e) {
+	    e.preventDefault();
+	    $(this).tab('show');
+	});
+
+	$('a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+	    var id = $(e.target).attr("href");
+	    localStorage.setItem('selectedTab', id)
+	});
+
+	var selectedTab = localStorage.getItem('selectedTab');
+	if (selectedTab != null) {
+	    $('a[data-toggle="tab"][href="' + selectedTab + '"]').tab('show');
+	}
+</script>
+</html>

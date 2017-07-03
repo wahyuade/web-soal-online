@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./js/angular.min.js"></script>
+	<script type="text/javascript" src="./js/service.js"></script>
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+</head>
+<body ng-app="loginApp" ng-controller="loginController">
+<div class="text-center" style="margin-top: 170px">
+	<h3>Login Ujian Soal Online</h3>
+	<form class="form-group col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 alert alert-info" name="userForm" ng-submit="submitLogin()">
+		<div class="input-group" style="margin-bottom: 10px" >
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+			<input type="text" class="form-control" placeholder="username" name="username" ng-model="user.username">
+		</div>
+		<div class="input-group" style="margin-bottom: 10px" >
+		<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+			<input type="password" class="form-control" placeholder="password" name="password" ng-model="user.password">
+		</div>
+		<p style="margin-bottom: 10px">Don't have any account? <a href="/register">Register</a></p>
+		<input type="submit" class="btn btn-primary" value="Login" name="login">
+	</form>
+</div>
+</body>
+</html>
