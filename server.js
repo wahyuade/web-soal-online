@@ -8,6 +8,7 @@ var mongodb   = require('mongodb').MongoClient; // menggunakan library mongodb s
 var ObjectId = require('mongodb').ObjectId;		// untuk memanggil primary key (id)
 var io = require('socket.io').listen(server);	// menggunakan library socket.io untuk realtime socket
 var db;
+var port = process.env.PORT || 3000;
 
 //koneksi ke database mongodb
 var url = 'mongodb://localhost:27017/web-soal';
@@ -144,7 +145,7 @@ app.use('/soal', soal);
 
 app.use(express.static('public')); 	//membuka direktori public agar dapat di akses oleh client
 
-server.listen(3000);
+server.listen(port);
 
 //===============DATABASE PROCESS===============
 var hapusPeserta = function(res, id){
