@@ -103,8 +103,8 @@ soal.get('/', function(req,res){
 	res.sendFile(__dirname + '/dashboard_peserta.html');
 });
 
-soal.get('/list_soal', function(req, res){
-	listSoalPeserta(res);
+soal.get('/list_soal', upload.array(), function(req, res, next){
+	listSoalPeserta(req, res);
 });
 
 soal.get('/jawab',function(req, res){
@@ -219,10 +219,23 @@ var listSoalAdmin = function(res){
 	})
 }
 
-var listSoalPeserta = function(res){
+var listSoalPeserta = function(req, res){
+	var i,j;
 	var collection = db.collection('data_soal');
+	var jawaban = db.collection('jawaban');
+	var respon = {};
+
 	collection.find({}, {a:1,b:1,c:1,d:1,pertanyaan:1}).toArray(function(err, docs){
-		res.json(docs);
+		jawaban.find({id_user:req.headers.cookie}, {_id:0,id_user:0}).toArray(function(err, result){
+			for(i=0;i<docs.length;i++){
+				for(j=0;j<result.length;j++){
+					if(docs[i]._id == result[j].id_soal){
+						docs[i].jawaban = result[j].jawab;
+					}
+				}
+			}
+			res.json(docs);
+		});
 	})
 }
 
