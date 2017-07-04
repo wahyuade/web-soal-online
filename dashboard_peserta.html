@@ -8,8 +8,106 @@
 	<script type="text/javascript" src="./js/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/angular.min.js"></script>
 	<script type="text/javascript" src="./js/bootstrap.js"></script>
+	<script type="text/javascript" src="./js/service_peserta.js"></script>
 </head>
-<body>
-<h1>Ini halaman dashboard peserta</h1>
+<body ng-app="dashboardPesertaApp" ng-controller="PesertaController">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Ujian soal online</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">{{userLogin}}</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li ng-click="logoutUser()"><a href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+ <div class="row">
+    <div class="col-sm-3">
+        <div class="nav-side-menu">
+            <div class="brand">Jumlah soal : {{listSoal.length}}</div>
+            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            <div class="menu-list">
+                <ul id="menu-content" class="menu-content collapse out">
+                    <li data-toggle="collapse" data-target="#new" class="collapsed" aria-expanded="true">
+                        <a href="#"><i class="fa fa-dashboard fa-lg"></i>Soal<span class="arrow"></span></a>
+                    </li>
+                    <ul class="sub-menu collapse in" id="new">
+                        <li ng-repeat="soal in listSoal" ng-click="detailSoal(soal, $index+1)" id="no{{$index}}">No {{$index+1}}</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="status" class="col-sm-9">
+        <h1>{{judul}}</h1>
+        <div class="row">
+        	<div class="col-md-12 col-sm-12">
+        		<p>{{soal.pertanyaan}}</p>
+        	</div>
+        </div>
+        <div class="row" >
+        	<div class="col-md-6 col-sm-6" style="margin-bottom: 10px">
+	        	<div class="input-group" ng-click="pilihJawaban(soal,'a')">
+			      <span class="input-group-addon">
+			        <input type="radio" name="pilihan" ng-model="soal.jawaban" value="a">
+			      </span>
+			      <span class="form-control">{{soal.a}}</span>
+			    </div>
+        	</div>
+        	<div class="col-md-6 col-sm-6" style="margin-bottom: 10px">
+	        	<div class="input-group" ng-click="pilihJawaban(soal,'b')">
+			      <span class="input-group-addon">
+			        <input type="radio" name="pilihan" ng-model="soal.jawaban" value="b">
+			      </span>
+			      <span class="form-control">{{soal.b}}</span>
+			    </div>
+        	</div>
+        </div>
+        <div class="row" >
+        	<div class="col-md-6 col-sm-6" style="margin-bottom: 10px">
+	        	<div class="input-group" ng-click="pilihJawaban(soal,'c')">
+			      <span class="input-group-addon">
+			        <input type="radio" name="pilihan" ng-model="soal.jawaban" value="c">
+			      </span>
+			      <span class="form-control">{{soal.c}}</span>
+			    </div>
+        	</div>
+        	<div class="col-md-6 col-sm-6" style="margin-bottom: 10px">
+	        	<div class="input-group" ng-click="pilihJawaban(soal,'d')">
+			      <span class="input-group-addon">
+			        <input type="radio" name="pilihan" ng-model="soal.jawaban" value="d">
+			      </span>
+			      <span class="form-control">{{soal.d}}</span>
+			    </div>
+        	</div>
+        </div>
+        <div class="row">
+        	<div class="col-md-6 col-sm-6 col-xs-6">
+        		<button ng-click="backSoal(listSoal)" class="btn btn-primary" style="float: right;">< Back</button>
+        	</div>
+        	<div class="col-md-6 col-sm-6 col-xs-6">
+        		<button ng-click="nextSoal(listSoal)" class="btn btn-primary">Next ></button>
+        	</div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -11,6 +11,7 @@ var db;
 var port = process.env.PORT || 3000;
 
 //koneksi ke database mongodb
+// var url = 'mongodb://localhost:27017/web-soal';
 var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
 mongodb.connect(url, function(err, dbase){
   	console.log("Connected successfully to server");
@@ -63,7 +64,7 @@ dashboard.post('/update', upload.array(), function(req,res,next){
 });
 
 dashboard.get('/list_soal', function(req, res){
-	listSoal(res);
+	listSoalAdmin(res);
 });
 
 // routing untuk /dashboard/upload_soal -> digunakan untuk update maupun insert soal ke mongodb
@@ -102,6 +103,18 @@ soal.get('/', function(req,res){
 	res.sendFile(__dirname + '/dashboard_peserta.html');
 });
 
+soal.get('/list_soal', function(req, res){
+	listSoalPeserta(res);
+});
+
+soal.get('/jawab',function(req, res){
+	lihatJawabanPeserta(req, res);
+});
+
+soal.post('/jawab', upload.array(), function(req, res, next){
+	jawabSoal(req, res);
+});
+
 //Selesai untuk DASHBOARD PESERTA
 
 //routing untuk halaman landing localhost/ dengan type GET
@@ -137,6 +150,14 @@ app.post('/login', upload.array(), function(req,res,next){
 	loginAccount(req.body, res);
 });
 
+//untuk mengetahui data user yang login
+app.get('/user', function(req,res){
+	var collection = db.collection('users');
+	collection.findOne(ObjectId(req.headers.cookie), function(err, docs){
+		res.json(docs);
+	});
+});
+
 //MENDEFINISIKAN ROUTING PREFIX pada alamat / address http untuk /dashboard
 app.use('/dashboard', dashboard);
 
@@ -146,6 +167,7 @@ app.use('/soal', soal);
 app.use(express.static('public')); 	//membuka direktori public agar dapat di akses oleh client
 
 server.listen(port);
+console.log('port connect in '+port);
 
 //===============DATABASE PROCESS===============
 var hapusPeserta = function(res, id){
@@ -169,9 +191,37 @@ var listPeserta = function(res){
 	});
 }
 
-var listSoal = function(res){
+var jawabSoal = function(req, res){
+	var collection = db.collection('jawaban');
+	collection.findOne({id_soal:req.body.id_soal, id_user:req.body.id_user}, function(err, docs){
+		if(docs == null){
+			collection.insert(req.body, function(err, result){
+				res.json(result);
+			});
+		}else{
+			collection.updateOne({'_id':ObjectId(docs._id)},{$set:{
+				jawab:req.body.jawab
+			}}, {upsert:false}, function(err, result){
+				res.json(result);
+			});
+		}
+	})
+}
+
+var lihatJawabanPeserta = function(req,res){
+	var collection = db.collection('jawaban');
+}
+
+var listSoalAdmin = function(res){
 	var collection = db.collection('data_soal');
 	collection.find().toArray(function(err, docs){
+		res.json(docs);
+	})
+}
+
+var listSoalPeserta = function(res){
+	var collection = db.collection('data_soal');
+	collection.find({}, {a:1,b:1,c:1,d:1,pertanyaan:1}).toArray(function(err, docs){
 		res.json(docs);
 	})
 }

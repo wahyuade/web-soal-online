@@ -3,7 +3,7 @@ var dashboardAdminApp = angular.module('dashboardAdminApp', []);
 dashboardAdminApp.controller('AdminController', function($scope, $http){
 	$scope.judul = 'Tambah Soal';
 	var refresh = function(){
-		$http({
+		     $http({
           method  : 'GET',
           url     : '/dashboard/list_peserta'
          }).then(function success(result){
@@ -21,8 +21,20 @@ dashboardAdminApp.controller('AdminController', function($scope, $http){
          	console.log(err);
          })
 	}
-
-	refresh();
+  $scope.logoutUser = function(){
+    document.cookie = null;
+    location.href = 'login';
+  }
+  //untuk mengetahui user siapa yg login
+    $http({
+      method  : 'GET',
+      url     : '/user/'
+     }).then(function success(result){
+      $scope.userLogin = result.data.firstname+" "+result.data.lastname;
+     }, function error(err){
+      console.log(err);
+     })
+	  refresh();
 
     $scope.hapusPeserta = function(id){
     	$http({
