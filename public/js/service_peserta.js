@@ -52,17 +52,17 @@ dashboardPesertaApp.controller('PesertaController', function($scope, $http){
 
      $scope.pilihJawaban = function(soal,jawaban){
      	soal.jawaban = jawaban;
-     	document.getElementById('no'+(index)).style.backgroundColor="green";
-     	document.getElementById('status').className = "col-md-9 alert alert-info";
 
-     	var jawab = {id_soal:soal._id,id_user:document.cookie,jawab:jawaban}
+        var jawab = {id_soal:soal._id,id_user:document.cookie.slice(10),jawab:jawaban}
 
-     	$http({
+        $http({
           method  : 'POST',
           data : jawab,
           url     : '/soal/jawab',
           headers : {'Content-Type': 'application/json'} 
          }).then(function success(result){
+         	document.getElementById('no'+(index)).style.backgroundColor="green";
+         	document.getElementById('status').className = "col-md-9 alert alert-info";
          	console.log(result)
          }, function error(err){
          	console.log(err);
@@ -71,9 +71,15 @@ dashboardPesertaApp.controller('PesertaController', function($scope, $http){
 
      function status(jawaban){
      	if(jawaban != undefined){
+            document.getElementById('no'+(index)).style.backgroundColor="green";
      		document.getElementById('status').className = "col-md-9 alert alert-info";
      	}else{
+            document.getElementById('no'+(index)).style.backgroundColor="";
      		document.getElementById('status').className = "col-md-9 alert";
      	}
      }
+     $scope.logoutUser = function(){
+        document.cookie = "x_api_key=";
+        location.href = 'login';
+      }
 });

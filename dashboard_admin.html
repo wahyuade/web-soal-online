@@ -51,7 +51,6 @@
     <li role="presentation"><a href="#user_terdaftar" aria-controls="user_terdaftar" role="tab" data-toggle="tab">User Terdaftar</a></li>
     <li role="presentation"><a href="#manajemen_soal" aria-controls="manajemen_soal" role="tab" data-toggle="tab">Manajemen Soal</a></li>
     <li role="presentation"><a href="#hasil" aria-controls="hasil" role="tab" data-toggle="tab">Hasil</a></li>
-    <li role="presentation"><a href="#user_online" aria-controls="user_online" role="tab" data-toggle="tab">User Online</a></li>
   </ul>
 
 	<!-- Tab panes -->
@@ -145,8 +144,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-9">
-                    <h1>{{judul}}</h1>
+                <div class="col-sm-9 jumbotron" style="padding-top: 0px">
+                	<h2>{{judul}}</h1>
                     <div class="row">
                     	<div class="col-md-12 col-sm-12">
                     		<div class="input-group" style="margin-bottom: 10px" >
@@ -202,8 +201,32 @@
             </div>
             </div>
 		</div>
-		<div role="tabpanel" class="tab-pane" id="hasil">C</div>
-		<div role="tabpanel" class="tab-pane" id="user_online">D</div>
+		<div role="tabpanel" class="tab-pane" id="hasil">
+			<table class="table">
+					<thead> 
+						<tr> 
+							<th>#</th> 
+							<th>Name</th> 
+							<th>username</th> 
+							<th>Benar</th> 
+							<th>Salah</th> 
+							<th>Tidak di jawab</th> 
+							<th>Nilai</th> 
+						</tr> 
+					</thead>
+					<tbody>
+						<tr ng-repeat="hasil in listHasil">
+							<th>{{$index+1}}</th>
+							<td>{{hasil.nama}}</td>
+							<td>{{hasil.username}}</td>
+							<td>{{hasil.benar}}</td>
+							<td>{{hasil.salah}}</td>
+							<td>{{hasil.kosong}}</td>
+							<td>{{hasil.nilai}}</td>
+						</tr> 
+					</tbody>
+				</table>
+		</div>
 	</div>
 
 </div>

@@ -12,7 +12,7 @@ loginApp.controller('loginController', function($scope, $http){
           headers : {'Content-Type': 'application/json'} 
          })
 		.then(function success(result){
-			document.cookie = result.data.user._id;
+			document.cookie = 'x_api_key='+result.data.user._id;
 			location.href = 'dashboard';
 		}, function error(err){
 			console.log(err);
@@ -34,7 +34,7 @@ registerApp.controller('registerController', function($scope, $http){
           headers : {'Content-Type': 'application/json'} 
          })
 		.then(function success(result){
-			document.cookie = result.data.ops[0]._id;
+			document.cookie = 'x_api_key='+result.data.ops[0]._id;
 			location.href = 'dashboard';
 		}, function error(err){
 			console.log(err);

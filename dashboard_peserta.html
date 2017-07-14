@@ -43,14 +43,22 @@
     <div class="col-sm-3">
         <div class="nav-side-menu">
             <div class="brand">Jumlah soal : {{listSoal.length}}</div>
-            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content" onload="status()"></i>
             <div class="menu-list">
                 <ul id="menu-content" class="menu-content collapse out">
                     <li data-toggle="collapse" data-target="#new" class="collapsed" aria-expanded="true">
                         <a href="#"><i class="fa fa-dashboard fa-lg"></i>Soal<span class="arrow"></span></a>
                     </li>
                     <ul class="sub-menu collapse in" id="new">
-                    <li ng-repeat="soal in listSoal" ng-click="detailSoal(soal, $index+1)" id="no{{$index}}">No {{$index+1}}</li>
+                    <div ng-repeat="soal in listSoal">
+                        <div ng-if="soal.jawaban == undefined">
+                            <li  ng-click="detailSoal(soal, $index+1)" id="no{{$index}}">No {{$index+1}}</li>
+                        </div>
+                        <div ng-if="soal.jawaban != undefined">
+                            <li  ng-click="detailSoal(soal, $index+1)" id="no{{$index}}" style="background: green">No {{$index+1}}</li>
+                        </div>
+                        
+                    </div>
                     </ul>
                 </ul>
             </div>

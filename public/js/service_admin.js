@@ -20,9 +20,17 @@ dashboardAdminApp.controller('AdminController', function($scope, $http){
          }, function error(err){
          	console.log(err);
          })
+         $http({
+          method  : 'GET',
+          url     : '/dashboard/list_hasil'
+         }).then(function success(result){
+          $scope.listHasil = result.data;
+         }, function error(err){
+          console.log(err);
+         })
 	}
   $scope.logoutUser = function(){
-    document.cookie = null;
+    document.cookie = "x_api_key=";
     location.href = 'login';
   }
   //untuk mengetahui user siapa yg login

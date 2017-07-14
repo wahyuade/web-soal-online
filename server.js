@@ -6,13 +6,13 @@ var upload = multer();							// definisi penggunaan library multer
 var server = require('http').createServer(app);	// menggunakan library http untuk mengawasi port server di library socket.io
 var mongodb   = require('mongodb').MongoClient; // menggunakan library mongodb sebagai mongodb client
 var ObjectId = require('mongodb').ObjectId;		// untuk memanggil primary key (id)
-var io = require('socket.io').listen(server);	// menggunakan library socket.io untuk realtime socket
-var db;
-var port = process.env.PORT || 3000;
+
+var db;  //variabel global untuk handle database
+var port = process.env.PORT || 80; //setting port server
 
 //koneksi ke database mongodb
-// var url = 'mongodb://localhost:27017/web-soal';
-var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
+var url = 'mongodb://localhost:27017/web-soal';
+// var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
 mongodb.connect(url, function(err, dbase){
   	console.log("Connected successfully to server");
   	db = dbase;
@@ -29,7 +29,7 @@ var dashboard = express.Router();
 //middleware untuk /dashboard
 dashboard.use(function(req,res,next){
 	var collection = db.collection('users');
-	collection.findOne(ObjectId(req.headers.cookie), function(err, docs){
+	collection.findOne({_id:ObjectId(req.headers.cookie.slice(10))}, function(err, docs){
 		if(docs != null){
 			if(docs.role == 1){
 				next();	//ketika sukses melewati validasi / pengecekan yang diinginkan
@@ -63,8 +63,13 @@ dashboard.post('/update', upload.array(), function(req,res,next){
 	updatePeserta(req, res);
 });
 
+// routing untuk /dashboard/list_soal khusus untuk admin, sehingga ada jawaban saat list soal
 dashboard.get('/list_soal', function(req, res){
 	listSoalAdmin(res);
+});
+
+dashboard.get('/list_hasil', function(req, res){
+	listHasil(res);
 });
 
 // routing untuk /dashboard/upload_soal -> digunakan untuk update maupun insert soal ke mongodb
@@ -85,7 +90,7 @@ var soal = express.Router();
 //middleware untuk /soal
 soal.use(function(req,res,next){
 	var collection = db.collection('users');
-	collection.findOne(ObjectId(req.headers.cookie), function(err, docs){
+	collection.findOne({_id:ObjectId(req.headers.cookie.slice(10))}, function(err, docs){
 		if(docs != null){
 			if(docs.role == 0){
 				next();	//ketika sukses melewati validasi / pengecekan yang diinginkan
@@ -153,7 +158,7 @@ app.post('/login', upload.array(), function(req,res,next){
 //untuk mengetahui data user yang login
 app.get('/user', function(req,res){
 	var collection = db.collection('users');
-	collection.findOne(ObjectId(req.headers.cookie), function(err, docs){
+	collection.findOne({_id:ObjectId(req.headers.cookie.slice(10))}, function(err, docs){
 		res.json(docs);
 	});
 });
@@ -219,6 +224,46 @@ var listSoalAdmin = function(res){
 	})
 }
 
+var listHasil = function(res){
+	var jawaban = db.collection('jawaban');
+	var soal = db.collection('data_soal');
+	var user = db.collection('users');
+	var response = new Array();
+	var i,j;
+
+	soal.find({}, {jawaban:1}).toArray(function(err, soal_data){
+		user.find({role:0}, {_id:1, firstname:1, lastname:1, username:1}).toArray(function(err, user_data){
+			jawaban.find({}).toArray(function(err, jawaban_data){
+				for(k=0;k<user_data.length;k++){
+					var hasil = {};
+					hasil.benar = 0;
+					hasil.salah = 0;
+					hasil.kosong = 0;
+					for(i=0;i<soal_data.length;i++){
+						for(j=0;j<jawaban_data.length;j++){
+							if(soal_data[i]._id == jawaban_data[j].id_soal){
+								if(user_data[k]._id == jawaban_data[j].id_user){
+									if(soal_data[i].jawaban == jawaban_data[j].jawab){
+										hasil.benar++;
+									}else{
+										hasil.salah++;
+									}
+								}
+							}
+						}
+					}
+					hasil.nilai = (hasil.benar/(soal_data.length))*100;
+					hasil.kosong = soal_data.length-(hasil.benar+hasil.salah);
+					hasil.nama = user_data[k].firstname+' '+user_data[k].lastname;
+					hasil.username = user_data[k].username;
+					response.push(hasil);
+				}
+				res.json(response);
+			});
+		});
+	})
+}
+
 var listSoalPeserta = function(req, res){
 	var i,j;
 	var collection = db.collection('data_soal');
@@ -226,7 +271,7 @@ var listSoalPeserta = function(req, res){
 	var respon = {};
 
 	collection.find({}, {a:1,b:1,c:1,d:1,pertanyaan:1}).toArray(function(err, docs){
-		jawaban.find({id_user:req.headers.cookie}, {_id:0,id_user:0}).toArray(function(err, result){
+		jawaban.find({id_user:req.headers.cookie.slice(10)}, {_id:0,id_user:0}).toArray(function(err, result){
 			for(i=0;i<docs.length;i++){
 				for(j=0;j<result.length;j++){
 					if(docs[i]._id == result[j].id_soal){
