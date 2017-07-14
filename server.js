@@ -11,8 +11,8 @@ var db;  //variabel global untuk handle database
 var port = process.env.PORT || 80; //setting port server
 
 //koneksi ke database mongodb
-var url = 'mongodb://localhost:27017/web-soal';
-// var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
+// var url = 'mongodb://localhost:27017/web-soal';
+var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
 mongodb.connect(url, function(err, dbase){
   	console.log("Connected successfully to server");
   	db = dbase;
