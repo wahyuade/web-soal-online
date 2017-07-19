@@ -3,7 +3,7 @@ var app = express();						 	// memanggil library express
 var bodyParser = require('body-parser');		// menggunakan library body parser untuk mendapatkan data dari client
 var multer = require('multer');					// menggunakan library multer untuk multipart (form-data)
 var upload = multer();							// definisi penggunaan library multer
-var server = require('http').createServer(app);	// menggunakan library http untuk mengawasi port server di library socket.io
+var server = require('http').createServer(app);	// menggunakan library http standart dari node js
 var mongodb   = require('mongodb').MongoClient; // menggunakan library mongodb sebagai mongodb client
 var ObjectId = require('mongodb').ObjectId;		// untuk memanggil primary key (id)
 
@@ -11,8 +11,7 @@ var db;  //variabel global untuk handle database
 var port = process.env.PORT || 80; //setting port server
 
 //koneksi ke database mongodb
-// var url = 'mongodb://localhost:27017/web-soal';
-var url = 'mongodb://wahyuade:bismillah@ds147052.mlab.com:47052/web-soal';
+var url = 'mongodb://localhost:27017/web-soal';
 mongodb.connect(url, function(err, dbase){
   	console.log("Connected successfully to server");
   	db = dbase;
@@ -40,7 +39,6 @@ dashboard.use(function(req,res,next){
 			res.redirect('/login');
 		}
 	});
-	// console.log();
 });
 
 // routing untuk /dashboard/
@@ -127,7 +125,7 @@ app.get('/', function(req, res){
 	var collection = db.collection('users');
 	collection.find().toArray(function(err, docs){
 		if(docs.length > 0){
-			res.sendFile(__dirname + '/index.html');
+			res.redirect('/login');
 		}else{
 			res.sendFile(__dirname + '/register_admin.html');
 		}
@@ -184,7 +182,13 @@ var hapusPeserta = function(res, id){
 
 var updatePeserta = function(req, res){
 	var collection = db.collection('users');
-	collection.updateOne({'_id':ObjectId(req.body._id)}, {$set: {firstname:req.body.firstname, lastname:req.body.lastname, username:req.body.username, password:req.body.password}}, {upsert:false}, function(err, result){
+	collection.updateOne({'_id':ObjectId(req.body._id)}, {$set: 
+		{
+			firstname:req.body.firstname, 
+			lastname:req.body.lastname, 
+			username:req.body.username, 
+			password:req.body.password
+		}}, {upsert:false}, function(err, result){
 		res.json(result);
 	});
 }
